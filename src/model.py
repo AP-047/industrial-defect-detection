@@ -1,8 +1,9 @@
 import torch.nn as nn
 from torchvision import models
+from torchvision.models import resnet18, ResNet18_Weights
 
 def get_model(num_classes=2):
-    model = models.resnet18(pretrained=True)
+    model = model = resnet18(weights=ResNet18_Weights.DEFAULT)
 
     # Freeze most layers
     for param in model.parameters():
