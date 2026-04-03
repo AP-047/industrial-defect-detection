@@ -15,7 +15,7 @@ GitHub About (one-line): Transfer learning based industrial surface defect detec
 
 ## Dataset
 
-- Source: NEU Surface Defect Database
+- Source: [NEU Surface Defect Database](https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database)
 - In this repo, data is already arranged in class folders:
 
 ```text
