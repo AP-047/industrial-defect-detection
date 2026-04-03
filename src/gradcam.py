@@ -91,4 +91,4 @@ def visualize(image_path):
 
 
 if __name__ == "__main__":
-    visualize("data/val/defect/scratches_247.jpg")
+    visualize("data/val/defect/pitted_surface_247.jpg")
