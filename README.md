@@ -1,4 +1,4 @@
-# Industrial Defect Detection
+# Industrial Defect Detection using Deep Learning and Model Explainability
 
 A computer vision project for binary defect classification on steel surface images.
 
