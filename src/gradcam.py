@@ -69,6 +69,7 @@ def visualize(image_path):
 
     image = cv2.imread(image_path)
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    rgb = cv2.resize(rgb, (224, 224))
 
     input_tensor = transform(rgb).unsqueeze(0).to(DEVICE)
 
