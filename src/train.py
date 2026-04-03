@@ -41,8 +41,12 @@ def train():
 
     model = get_model().to(DEVICE)
 
+    trainable_params = [p for p in model.parameters() if p.requires_grad]
+    trainable_count = sum(p.numel() for p in trainable_params)
+    print(f"Trainable parameters: {trainable_count}")
+
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.fc.parameters(), lr=1e-3)
+    optimizer = optim.Adam(trainable_params, lr=1e-3)
 
     for epoch in range(5):
         model.train()
