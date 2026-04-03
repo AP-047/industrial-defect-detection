@@ -8,7 +8,11 @@ def get_model(num_classes=2):
     for param in model.parameters():
         param.requires_grad = False
 
-    # Replace final layer
+    # unfreeze last convolution block
+    for param in model.layer4.parameters():
+        param.requires_grad = True
+
+    # Replace classifier
     model.fc = nn.Sequential(
         nn.Linear(model.fc.in_features, 128),
         nn.ReLU(),
