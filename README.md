@@ -1,15 +1,17 @@
 # Industrial Defect Detection
 
-A deep learning project for binary defect classification on steel surface images.
+A computer vision project for binary defect classification on steel surface images.
 
 This project uses transfer learning with ResNet18 and Grad-CAM for visual explanation.
 
-## What this project does
+GitHub About (one-line): Transfer learning based industrial surface defect detection using ResNet18 with Grad-CAM interpretability on the NEU Surface Defect dataset.
 
-- Classifies images into 2 classes: `normal` and `defect`
-- Trains a ResNet18-based model on NEU Surface Defect images
-- Saves the trained model to `outputs/model.pth`
-- Generates Grad-CAM heatmaps to show where the model is focusing
+## Overview
+
+- Task: Binary classification (`normal` vs `defect`)
+- Backbone: ResNet18 (transfer learning)
+- Explainability: Grad-CAM
+- Output: trained weights at `outputs/model.pth`
 
 ## Dataset
 
@@ -28,38 +30,37 @@ data/
 
 ## Quick start
 
-1. Create and activate a Python virtual environment.
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Train model:
+2. Train model:
 
 ```bash
-python src/train.py
+python src/train.py --seed 42
 ```
 
-4. Run Grad-CAM visualization:
+3. Run Grad-CAM visualization:
 
 ```bash
-python src/gradcam.py
+python src/gradcam.py --image-path data/val/defect/pitted_surface_247.jpg --model-path outputs/model.pth
 ```
 
-## Files (quick overview)
+## Project files
 
-- `src/dataset.py`: Loads images and applies transforms
-- `src/model.py`: Defines transfer learning model (ResNet18)
-- `src/train.py`: Trains model and saves weights
-- `src/gradcam.py`: Visualizes model attention using Grad-CAM
+- `src/dataset.py`: data loading and transforms
+- `src/model.py`: transfer learning model definition
+- `src/train.py`: training loop and model saving
+- `src/gradcam.py`: Grad-CAM visualization
 
-## Output
+## Results snapshot
 
-- Trained model: `outputs/model.pth`
-- Example analysis images: `data/Analysis/`
+- Validation accuracy: add your best score from training logs
+- Qualitative result: Grad-CAM highlights defect regions on validation samples
 
 ## Notes
 
-- This is a student project focused on practical implementation and model interpretability.
-- Current target task is binary classification (`normal` vs `defect`).
+- Focused on practical deep learning workflow: data loading, transfer learning, training, and model explainability.
+- Training supports a fixed random seed (`--seed`) for more reproducible results.

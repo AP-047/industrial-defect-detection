@@ -1,3 +1,4 @@
+import argparse
 import torch
 import cv2
 import numpy as np
@@ -56,9 +57,9 @@ class GradCAM:
 
         return cam
 
-def visualize(image_path):
+def visualize(image_path, model_path):
     model = get_model()
-    model.load_state_dict(torch.load("outputs/model.pth"))
+    model.load_state_dict(torch.load(model_path, map_location=DEVICE))
     model.to(DEVICE)
     model.eval()
 
@@ -68,6 +69,9 @@ def visualize(image_path):
     transform = get_transforms()
 
     image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"Failed to read image file: {image_path}")
+
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     rgb = cv2.resize(rgb, (224, 224))
 
@@ -90,5 +94,21 @@ def visualize(image_path):
     plt.show()
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Generate Grad-CAM visualization.")
+    parser.add_argument(
+        "--image-path",
+        default="data/val/defect/pitted_surface_247.jpg",
+        help="Path to input image.",
+    )
+    parser.add_argument(
+        "--model-path",
+        default="outputs/model.pth",
+        help="Path to trained model weights.",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    visualize("data/val/defect/pitted_surface_247.jpg")
+    args = parse_args()
+    visualize(args.image_path, args.model_path)
