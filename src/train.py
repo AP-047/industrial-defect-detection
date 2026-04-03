@@ -11,6 +11,25 @@ from tqdm import tqdm
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
+def evaluate(model, loader):
+    model.eval()
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for images, labels in loader:
+            images, labels = images.to(DEVICE), labels.to(DEVICE)
+
+            outputs = model(images)
+            _, preds = torch.max(outputs, 1)
+
+            correct += (preds == labels).sum().item()
+            total += labels.size(0)
+
+    accuracy = correct / total
+    return accuracy
+
+
 def train():
     transform = get_transforms()
 
@@ -41,7 +60,12 @@ def train():
 
             total_loss += loss.item()
 
-        print(f"Epoch {epoch+1}, Loss: {total_loss:.4f}")
+        val_acc = evaluate(model, val_loader)
+
+        print(f"Epoch {epoch+1}")
+        print(f"Loss: {total_loss:.4f}")
+        print(f"Validation Accuracy: {val_acc:.4f}")
+        print("-" * 30)
 
     torch.save(model.state_dict(), "outputs/model.pth")
 
