@@ -4,7 +4,7 @@ from torchvision import models
 def get_model(num_classes=2):
     model = models.resnet18(pretrained=True)
 
-    # Freeze backbone (faster training)
+    # Freeze most layers
     for param in model.parameters():
         param.requires_grad = False
 
