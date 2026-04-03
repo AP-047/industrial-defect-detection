@@ -14,33 +14,34 @@ class GradCAM:
         self.model = model
         self.target_layer = target_layer
 
-        self.gradients = None
-        self.activations = None
-
-        # forward hook
-        self.target_layer.register_forward_hook(self.save_activation)
-
-        # full backward hook (correct one)
-        self.target_layer.register_full_backward_hook(self.save_gradient)
-
-    def save_activation(self, module, input, output):
-        self.activations = output
-
-    def save_gradient(self, module, grad_input, grad_output):
-        self.gradients = grad_output[0]
-
     def generate(self, input_tensor, class_idx):
-        self.model.zero_grad()
+        activations = None
+
+        def forward_hook(module, input, output):
+            nonlocal activations
+            activations = output
+
+        handle = self.target_layer.register_forward_hook(forward_hook)
 
         output = self.model(input_tensor)
-        loss = output[:, class_idx]
 
-        loss.backward()
+        handle.remove()
 
-        gradients = self.gradients.cpu().data.numpy()[0]
-        activations = self.activations.cpu().data.numpy()[0]
+        # get target class score
+        score = output[:, class_idx]
 
-        weights = np.mean(gradients, axis=(1, 2))
+        # compute gradients
+        grads = torch.autograd.grad(
+            outputs=score,
+            inputs=activations,
+            grad_outputs=torch.ones_like(score),
+            retain_graph=True
+        )[0]
+
+        activations = activations.detach().cpu().numpy()[0]
+        grads = grads.detach().cpu().numpy()[0]
+
+        weights = np.mean(grads, axis=(1, 2))
 
         cam = np.zeros(activations.shape[1:], dtype=np.float32)
 
