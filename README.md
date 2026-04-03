@@ -1,6 +1,6 @@
 # Industrial Defect Detection
 
-A simple deep learning project for binary defect classification on steel surface images.
+A deep learning project for binary defect classification on steel surface images.
 
 This project uses transfer learning with ResNet18 and Grad-CAM for visual explanation.
 
@@ -61,5 +61,5 @@ python src/gradcam.py
 
 ## Notes
 
-- This is a student project focused on clear and simple implementation.
+- This is a student project focused on practical implementation and model interpretability.
 - Current target task is binary classification (`normal` vs `defect`).
