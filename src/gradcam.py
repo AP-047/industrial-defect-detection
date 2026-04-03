@@ -17,24 +17,28 @@ class GradCAM:
         self.gradients = None
         self.activations = None
 
-        target_layer.register_forward_hook(self.save_activation)
-        target_layer.register_backward_hook(self.save_gradient)
+        # forward hook
+        self.target_layer.register_forward_hook(self.save_activation)
+
+        # full backward hook (correct one)
+        self.target_layer.register_full_backward_hook(self.save_gradient)
 
     def save_activation(self, module, input, output):
         self.activations = output
 
-    def save_gradient(self, module, grad_in, grad_out):
-        self.gradients = grad_out[0]
+    def save_gradient(self, module, grad_input, grad_output):
+        self.gradients = grad_output[0]
 
     def generate(self, input_tensor, class_idx):
         self.model.zero_grad()
-        output = self.model(input_tensor)
 
-        loss = output[0, class_idx]
+        output = self.model(input_tensor)
+        loss = output[:, class_idx]
+
         loss.backward()
 
-        gradients = self.gradients[0].cpu().data.numpy()
-        activations = self.activations[0].cpu().data.numpy()
+        gradients = self.gradients.cpu().data.numpy()[0]
+        activations = self.activations.cpu().data.numpy()[0]
 
         weights = np.mean(gradients, axis=(1, 2))
 
@@ -45,11 +49,11 @@ class GradCAM:
 
         cam = np.maximum(cam, 0)
         cam = cv2.resize(cam, (224, 224))
+
         cam = cam - np.min(cam)
-        cam = cam / np.max(cam)
+        cam = cam / (np.max(cam) + 1e-8)
 
         return cam
-
 
 def visualize(image_path):
     model = get_model()
