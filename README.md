@@ -1,10 +1,10 @@
 # Industrial Defect Detection using Deep Learning and Model Explainability
 
-A computer vision project for binary defect classification on steel surface images.
+A deep learning-based computer vision system for automated surface defect detection in industrial materials.
 
-This project uses transfer learning with ResNet18 and Grad-CAM for visual explanation.
+This project leverages transfer learning with ResNet18 and integrates Grad-CAM to provide visual explanations of model predictions.
 
-GitHub About (one-line): Transfer learning based industrial surface defect detection using ResNet18 with Grad-CAM interpretability on the NEU Surface Defect dataset.
+GitHub About: Transfer learning–based industrial defect detection with ResNet18 and Grad-CAM interpretability on the NEU Surface Defect dataset.
 
 ## Overview
 
