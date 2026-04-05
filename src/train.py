@@ -12,14 +12,17 @@ from model import get_model
 
 from tqdm import tqdm
 
+# Centralize device selection so training runs on GPU when available.
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def set_seed(seed):
+    """Set random seeds for repeatable training runs."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
 
+    # Keep CUDA behavior deterministic when a GPU is available.
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
@@ -29,12 +32,14 @@ def set_seed(seed):
 
 
 def evaluate(model, loader):
+    """Compute validation accuracy without tracking gradients."""
     model.eval()
     correct = 0
     total = 0
 
     with torch.no_grad():
         for images, labels in loader:
+            # Move data to the active device before inference.
             images, labels = images.to(DEVICE), labels.to(DEVICE)
 
             outputs = model(images)
@@ -48,22 +53,28 @@ def evaluate(model, loader):
 
 
 def train(train_dir, val_dir, batch_size, lr, epochs, output_model, seed):
+    """Train the defect detector and save the final model weights."""
     set_seed(seed)
 
+    # Use the same preprocessing pipeline for train and validation data.
     transform = get_transforms()
 
     train_dataset = DefectDataset(train_dir, transform)
     val_dataset = DefectDataset(val_dir, transform)
 
+    # DataLoader handles batching and shuffling for the training loop.
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
+    # Build the transfer-learning model and move it to the selected device.
     model = get_model().to(DEVICE)
 
+    # Only parameters marked as trainable are passed to the optimizer.
     trainable_params = [p for p in model.parameters() if p.requires_grad]
     trainable_count = sum(p.numel() for p in trainable_params)
     print(f"Trainable parameters: {trainable_count}")
 
+    # CrossEntropyLoss is the standard loss for multi-class classification.
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(trainable_params, lr=lr)
 
@@ -72,6 +83,7 @@ def train(train_dir, val_dir, batch_size, lr, epochs, output_model, seed):
         total_loss = 0
 
         for images, labels in tqdm(train_loader):
+            # Forward pass, loss computation, and backpropagation.
             images, labels = images.to(DEVICE), labels.to(DEVICE)
 
             outputs = model(images)
@@ -83,6 +95,7 @@ def train(train_dir, val_dir, batch_size, lr, epochs, output_model, seed):
 
             total_loss += loss.item()
 
+        # Measure how well the model generalizes after each epoch.
         val_acc = evaluate(model, val_loader)
 
         print(f"Epoch {epoch+1}")
@@ -90,13 +103,17 @@ def train(train_dir, val_dir, batch_size, lr, epochs, output_model, seed):
         print(f"Validation Accuracy: {val_acc:.4f}")
         print("-" * 30)
 
+    # Create the output folder if it does not already exist.
     output_dir = os.path.dirname(output_model)
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
+
+    # Save model weights only, which is usually enough for inference and fine-tuning.
     torch.save(model.state_dict(), output_model)
 
 
 def parse_args():
+    """Parse training options from the command line."""
     parser = argparse.ArgumentParser(description="Train defect detection model.")
     parser.add_argument("--train-dir", default="data/train", help="Path to training data directory.")
     parser.add_argument("--val-dir", default="data/val", help="Path to validation data directory.")
@@ -109,6 +126,7 @@ def parse_args():
 
 
 if __name__ == "__main__":
+    # Keep the script runnable directly from the command line.
     args = parse_args()
     train(
         train_dir=args.train_dir,
