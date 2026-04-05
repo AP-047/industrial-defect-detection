@@ -25,6 +25,7 @@ data/
 		normal/
 		defect/
 ```
+Note: Since the dataset does not contain a true "normal" class, the "patches" category was treated as normal, while all other defect categories were grouped as defect.
 
 ## Quick start
 
@@ -46,7 +47,7 @@ python src/train.py --seed 42
 python src/gradcam.py --image-path data/val/defect/pitted_surface_247.jpg --model-path outputs/model.pth
 ```
 
-## Project files
+## Project structure
 
 - `src/dataset.py`: data loading and transforms
 - `src/model.py`: transfer learning model definition
@@ -55,8 +56,14 @@ python src/gradcam.py --image-path data/val/defect/pitted_surface_247.jpg --mode
 
 ## Results snapshot
 
-- Validation accuracy: add your best score from training logs
+- Validation accuracy: ~100% on validation split (limited dataset)
 - Qualitative result: Grad-CAM highlights defect regions on validation samples
+
+### Example Output
+
+Below is a Grad-CAM visualization showing model attention:
+
+![GradCAM Example](data\Analysis\example-1.png)
 
 ## Notes
 
