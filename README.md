@@ -42,9 +42,9 @@ python src/train.py --seed 42
 ```
 
 3. Run Grad-CAM visualization:
-
+Edit the image path in `src/gradcam.py` to point to a validation image, then run:
 ```bash
-python src/gradcam.py --image-path data/val/defect/pitted_surface_247.jpg --model-path outputs/model.pth
+python src/gradcam.py
 ```
 
 ## Project structure
@@ -63,7 +63,7 @@ python src/gradcam.py --image-path data/val/defect/pitted_surface_247.jpg --mode
 
 Below is a Grad-CAM visualization showing model attention:
 
-![GradCAM Example](outputs\example-1.png)
+![GradCAM Example](./outputs/example-1.png)
 
 ## Notes
 
