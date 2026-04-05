@@ -63,7 +63,7 @@ python src/gradcam.py --image-path data/val/defect/pitted_surface_247.jpg --mode
 
 Below is a Grad-CAM visualization showing model attention:
 
-![GradCAM Example](data\Analysis\example-1.png)
+![GradCAM Example](outputs\example-1.png)
 
 ## Notes
 
