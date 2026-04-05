@@ -63,7 +63,7 @@ python src/gradcam.py
 
 Below is a Grad-CAM visualization showing model attention:
 
-![GradCAM Example](./outputs/example-1.png)
+![GradCAM Example](assets/example-1.png)
 
 ## Notes
 
