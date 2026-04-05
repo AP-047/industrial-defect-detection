@@ -4,8 +4,6 @@ A deep learning-based computer vision system for automated surface defect detect
 
 This project leverages transfer learning with ResNet18 and integrates Grad-CAM to provide visual explanations of model predictions.
 
-GitHub About: Transfer learning–based industrial defect detection with ResNet18 and Grad-CAM interpretability on the NEU Surface Defect dataset.
-
 ## Overview
 
 - Task: Binary classification (`normal` vs `defect`)
